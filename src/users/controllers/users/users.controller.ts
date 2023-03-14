@@ -1,14 +1,15 @@
-import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 
 @Controller('users')
 export class UsersController {
 	@Get('') // get decorator from nest which takes an argument as the route endpoint
-	getUsers() {
+	getUsers(@Query('sortBy') sortBy: string) {
 		return {
 			username: 'Bruce',
 			email: 'bruce@avengers.com',
+			sortBy,
 		};
 	}
 
@@ -44,7 +45,8 @@ export class UsersController {
 	}
 
 	@Post('create')
-	createUsers(@Body() userData: CreateUserDto) {
+	@UsePipes(new ValidationPipe())
+	createUser(@Body() userData: CreateUserDto) {
 		console.log(userData);
 		return {};
 	}
